@@ -3,6 +3,10 @@
   "productName": "Electron tRPC Template",
   "description": "Type-safe Electron monorepo template powered by Vite and tRPC",
   "version": "1.0.2",
+  "author": {
+    "name": "wengzehua",
+    "email": "627649674@qq.com"
+  },
   "private": true,
   "packageManager": "pnpm@10.34.5",
   "main": "packages/main/dist/index.cjs",

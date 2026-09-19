@@ -12,6 +12,7 @@ const config: Configuration = {
   generateUpdatesFilesForAllChannels: true,
   linux: {
     target: ['deb'],
+    maintainer: 'wengzehua <627649674@qq.com>',
   },
   extraResources: [
     {
