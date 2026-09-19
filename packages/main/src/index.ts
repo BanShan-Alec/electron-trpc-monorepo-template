@@ -50,11 +50,10 @@ process.on('uncaughtException', (err) => handleFatalCrash('uncaughtException', e
 process.on('unhandledRejection', (reason) => handleFatalCrash('unhandledRejection', reason));
 
 export async function initApp(initConfig: AppInitConfig) {
-  const isDev = process.env.NODE_ENV !== 'production';
   const moduleRunner = createModuleRunner()
     .init(createLogModule())
     .init(createTRPCModule())
-    .init(createWindowManagerModule({ initConfig, openDevTools: isDev }))
+    .init(createWindowManagerModule({ initConfig, openDevTools: false }))
     .init(createTrayModule())
     .init(disallowMultipleAppInstance())
     .init(terminateAppOnLastWindowClose())

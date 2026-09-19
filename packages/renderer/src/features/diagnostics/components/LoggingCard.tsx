@@ -45,7 +45,7 @@ export const LoggingCard: React.FC<LoggingCardProps> = ({
           </Button>
           <Button
             size="sm"
-            variant="danger"
+            variant="secondary"
             onClick={() => onSendLog('error')}
             isLoading={isLoading}
           >
