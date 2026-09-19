@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v1.0.3
+
+[compare changes](https://github.com/BanShan-Alec/electron-app-temp4/compare/v1.0.2...v1.0.3)
+
+### 🩹 缺陷修复 (Bug Fixes)
+
+- **build:** 补充 author 邮箱与 maintainer 以解决 Linux deb 打包报错 ([b2fdbc4](https://github.com/BanShan-Alec/electron-app-temp4/commit/b2fdbc4))
+
+### ❤️ Contributors
+
+- Wengzehua ([@BanShan-Alec](https://github.com/BanShan-Alec))
+
 ## v1.0.2
 
 [compare changes](https://github.com/BanShan-Alec/electron-app-temp4/compare/v1.0.1...v1.0.2)
