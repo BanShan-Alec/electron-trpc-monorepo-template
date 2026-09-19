@@ -56,15 +56,21 @@ jobs:
 
       - name: Build Application (Windows)
         if: runner.os == 'Windows'
-        run: pnpm run build:win
+        run: pnpm run build:win -- -p never
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build Application (macOS)
         if: runner.os == 'macOS'
-        run: pnpm run build:mac
+        run: pnpm run build:mac -- -p never
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build Application (Linux)
         if: runner.os == 'Linux'
-        run: pnpm run build:linux
+        run: pnpm run build:linux -- -p never
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
