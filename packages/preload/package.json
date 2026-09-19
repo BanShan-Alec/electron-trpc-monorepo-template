@@ -1,0 +1,26 @@
+{
+  "name": "@app/preload",
+  "scripts": {
+    "build": "vite build",
+    "typecheck": "tsc --noEmit"
+  },
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./dist/_virtual_browser.js"
+    },
+    "./exposed.js": {
+      "types": "./src/exposed.d.ts",
+      "default": "./dist/exposed.js"
+    }
+  },
+  "devDependencies": {
+    "@app/tsconfig": "workspace:*",
+    "@trpc/client": "catalog:",
+    "@trpc/server": "catalog:",
+    "electron-trpc": "catalog:",
+    "mlly": "1.8.2",
+    "typescript": "catalog:",
+    "vite": "catalog:"
+  }
+}

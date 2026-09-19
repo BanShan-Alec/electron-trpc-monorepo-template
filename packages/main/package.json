@@ -1,0 +1,34 @@
+{
+  "name": "@app/main",
+  "scripts": {
+    "build": "vite build",
+    "typecheck": "tsc --noEmit"
+  },
+  "main": "./dist/index.cjs",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./dist/index.cjs"
+    },
+    "./router": {
+      "types": "./src/router/index.ts"
+    }
+  },
+  "dependencies": {
+    "@app/preload": "workspace:*",
+    "@app/renderer": "workspace:*",
+    "@app/shared": "workspace:*",
+    "electron-log": "^5.4.4",
+    "electron-updater": "6.8.3"
+  },
+  "devDependencies": {
+    "@app/tsconfig": "workspace:*",
+    "@trpc/client": "catalog:",
+    "@trpc/server": "catalog:",
+    "electron-devtools-installer": "4.0.0",
+    "electron-trpc": "catalog:",
+    "typescript": "catalog:",
+    "vite": "catalog:",
+    "zod": "catalog:"
+  }
+}
