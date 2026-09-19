@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v1.0.2
+
+[compare changes](https://github.com/BanShan-Alec/electron-app-temp4/compare/v1.0.1...v1.0.2)
+
+### 🩹 缺陷修复 (Bug Fixes)
+
+- **ci:** 禁用编译时的自动发布以修复缺少 GH_TOKEN 报错 ([c7a3c87](https://github.com/BanShan-Alec/electron-app-temp4/commit/c7a3c87))
+
+### ❤️ Contributors
+
+- Wengzehua ([@BanShan-Alec](https://github.com/BanShan-Alec))
+
 ## v1.0.1
 
 
