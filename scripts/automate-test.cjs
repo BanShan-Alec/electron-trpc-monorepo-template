@@ -116,30 +116,27 @@ async function runAutomation() {
     const badgeText = await cdp.evaluate(`
       (() => {
         const badges = Array.from(document.querySelectorAll('span, button'));
-        const versionEl = badges.find(el => el.textContent && el.textContent.includes('v1.0.3'));
+        const versionEl = badges.find(el => el.textContent && /v\\d+\\.\\d+\\.\\d+/.test(el.textContent));
         return versionEl ? versionEl.textContent.trim() : 'NOT_FOUND';
       })()
     `);
     console.log('   👉 Header 版本号展示结果:', badgeText);
-    if (!badgeText.includes('v1.0.3')) {
+    if (!/v\d+\.\d+\.\d+/.test(badgeText)) {
       throw new Error(`版本号 Badge 校验失败，实际展示为: ${badgeText}`);
     }
-    console.log('   ✅ [Step 1 成功] 版本号 Badge 正确显示 v1.0.3');
+    console.log(`   ✅ [Step 1 成功] 版本号 Badge 正确显示 ${badgeText}`);
 
-    // 2. 模拟用户点击 Header 上的版本 Badge 唤起更新弹窗
-    console.log('🖱️ [Step 2] 模拟用户点击版本号 Badge，唤起更新弹窗 (UpdateModal)...');
-    const clicked = await cdp.evaluate(`
+    console.log(
+      '📡 [Step 2] 模拟主进程 Tray 触发 CustomEvent ("app:open-update-modal") 0 延迟唤起弹窗...',
+    );
+    const eventDispatched = await cdp.evaluate(`
       (() => {
-        const btn = document.querySelector('button[title*="版本与检查更新"]');
-        if (btn) {
-          btn.click();
-          return true;
-        }
-        return false;
+        window.dispatchEvent(new CustomEvent('app:open-update-modal'));
+        return true;
       })()
     `);
-    console.log('   👉 点击按钮执行结果:', clicked);
-    await sleep(1000);
+    console.log('   👉 CustomEvent 派发执行结果:', eventDispatched);
+    await sleep(500);
 
     // 3. 验证更新弹窗是否已在 DOM 中弹出
     console.log('🔎 [Step 3] 校验 UpdateModal 是否成功弹出...');

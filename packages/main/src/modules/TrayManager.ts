@@ -48,6 +48,13 @@ export class TrayManager implements AppModule {
           click: () => {
             getLogManager().mainLogger.info('[Tray] User requested update check');
             this.restoreMainWindow();
+
+            // 0 毫秒原生派发 Web CustomEvent 唤起弹窗
+            const win = BrowserWindow.getAllWindows().find((w) => !w.isDestroyed());
+            win?.webContents
+              .executeJavaScript("window.dispatchEvent(new CustomEvent('app:open-update-modal'));")
+              .catch(() => {});
+
             const updater = getAutoUpdaterManager();
             updater.requestShowModal();
             updater.checkForUpdates(true).catch(() => {});

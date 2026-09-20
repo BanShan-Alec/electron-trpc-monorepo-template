@@ -65,6 +65,19 @@ export function useUpdater() {
     return () => clearInterval(interval);
   }, [syncUpdateState]);
 
+  // 3. 监听主进程托盘触发的 0 延迟原生 Web 事件
+  useEffect(() => {
+    const handleOpenModal = () => {
+      setIsModalOpen(true);
+      syncUpdateState();
+    };
+
+    window.addEventListener('app:open-update-modal', handleOpenModal);
+    return () => {
+      window.removeEventListener('app:open-update-modal', handleOpenModal);
+    };
+  }, [syncUpdateState]);
+
   // 3. 手动触发检查更新
   const checkForUpdates = useCallback(async () => {
     setIsChecking(true);
