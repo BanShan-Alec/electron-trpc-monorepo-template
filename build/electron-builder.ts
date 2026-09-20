@@ -13,7 +13,7 @@ const config: Configuration = {
   publish: {
     provider: 'github',
     owner: 'BanShan-Alec',
-    repo: 'electron-app-temp4',
+    repo: 'electron-trpc-monorepo-template',
     releaseType: 'release',
   },
   win: {

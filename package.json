@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/BanShan-Alec/electron-app-temp4.git"
+    "url": "https://github.com/BanShan-Alec/electron-trpc-monorepo-template.git"
   },
   "private": true,
   "packageManager": "pnpm@10.34.5",
