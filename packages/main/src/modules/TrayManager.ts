@@ -8,6 +8,7 @@ import { getLogManager } from './LogManager';
 
 export class TrayManager implements AppModule {
   #tray: Tray | null = null;
+  #contextMenu: Menu | null = null;
   static isQuitting = false;
 
   public enable({ app: electronApp }: ModuleContext): void {
@@ -38,12 +39,14 @@ export class TrayManager implements AppModule {
       this.#tray = new Tray(icon);
       this.#tray.setToolTip(`${app.getName()} - 桌面客户端`);
 
-      const contextMenu = Menu.buildFromTemplate([
+      this.#contextMenu = Menu.buildFromTemplate([
         {
+          id: 'tray-show-main-window',
           label: '显示主窗口',
           click: () => this.restoreMainWindow(),
         },
         {
+          id: 'tray-check-for-updates',
           label: '检查更新',
           click: () => {
             getLogManager().mainLogger.info('[Tray] User requested update check');
@@ -62,6 +65,7 @@ export class TrayManager implements AppModule {
         },
         { type: 'separator' },
         {
+          id: 'tray-quit-app',
           label: '退出应用',
           click: () => {
             TrayManager.isQuitting = true;
@@ -70,7 +74,7 @@ export class TrayManager implements AppModule {
         },
       ]);
 
-      this.#tray.setContextMenu(contextMenu);
+      this.#tray.setContextMenu(this.#contextMenu);
 
       // 单击/双击托盘图标切换窗口显示或隐藏
       this.#tray.on('click', () => {
@@ -145,14 +149,28 @@ export class TrayManager implements AppModule {
     return '';
   }
 
+  public getContextMenu(): Menu | null {
+    return this.#contextMenu;
+  }
+
   public destroy(): void {
     if (this.#tray) {
       this.#tray.destroy();
       this.#tray = null;
     }
+    if (trayManagerInstance === this) {
+      trayManagerInstance = null;
+    }
   }
 }
 
+let trayManagerInstance: TrayManager | null = null;
+
+export function getTrayManager(): TrayManager | null {
+  return trayManagerInstance;
+}
+
 export function createTrayModule(): TrayManager {
-  return new TrayManager();
+  trayManagerInstance = new TrayManager();
+  return trayManagerInstance;
 }

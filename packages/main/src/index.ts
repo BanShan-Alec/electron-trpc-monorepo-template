@@ -13,12 +13,19 @@ import { hardwareAccelerationMode } from './modules/HardwareAccelerationModule';
 import { createLogModule, getLogManager } from './modules/LogManager';
 import { disallowMultipleAppInstance } from './modules/SingleInstanceApp';
 import { createTRPCModule } from './modules/TRPCModule';
-import { createTrayModule } from './modules/TrayManager';
+import { createTrayModule, getTrayManager } from './modules/TrayManager';
 import { createWindowManagerModule } from './modules/WindowManager';
 import { WindowStateKeeper } from './modules/WindowStateKeeper';
 import { type AppRouter, appRouter } from './router/index';
 
-export { type AppRouter, appRouter, getAppConfigStore, getLogManager, WindowStateKeeper };
+export {
+  type AppRouter,
+  appRouter,
+  getAppConfigStore,
+  getLogManager,
+  getTrayManager,
+  WindowStateKeeper,
+};
 
 const cjsRequire = typeof require === 'function' ? require : createRequire(import.meta.url);
 
