@@ -1,26 +1,15 @@
-import { expect, test } from '@playwright/test';
-import { type ElectronTestContext, launchElectronApp } from './helpers/electron';
+import { expect, test } from './helpers/fixture';
 
 test.describe('Electron 托盘与更新弹窗 E2E 自动化测试', () => {
-  let ctx: ElectronTestContext;
-
-  test.beforeAll(async () => {
-    // 调用封装好的统一启动辅助函数
-    ctx = await launchElectronApp();
-  });
-
-  test.afterAll(async () => {
-    // 统一优雅清理资源
-    await ctx?.cleanup();
-  });
-
-  test('初始加载时更新弹窗应当处于隐藏状态', async () => {
-    const modalHeading = ctx.page.getByRole('heading', { name: '软件版本与更新' });
+  test('初始加载时更新弹窗应当处于隐藏状态', async ({ page }) => {
+    const modalHeading = page.getByRole('heading', { name: '软件版本与更新' });
     await expect(modalHeading).not.toBeVisible();
   });
 
-  test('从系统托盘右键菜单中触发“检查更新”后，前端应成功弹出检查更新窗口', async () => {
-    const { page, electronApp } = ctx;
+  test('从系统托盘右键菜单中触发“检查更新”后，前端应成功弹出检查更新窗口', async ({
+    page,
+    electronApp,
+  }) => {
     const modalHeading = page.getByRole('heading', { name: '软件版本与更新' });
 
     // 1. 在 Electron 主进程中通过动态模块加载获取 TrayManager，通过稳定语义 ID 查找菜单项并触发点击
