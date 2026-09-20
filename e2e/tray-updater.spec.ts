@@ -1,63 +1,26 @@
-import fs from 'node:fs';
-import os from 'node:os';
-import path from 'node:path';
-import {
-  type ElectronApplication,
-  _electron as electron,
-  expect,
-  type Page,
-  test,
-} from '@playwright/test';
+import { expect, test } from '@playwright/test';
+import { type ElectronTestContext, launchElectronApp } from './helpers/electron';
 
 test.describe('Electron 托盘与更新弹窗 E2E 自动化测试', () => {
-  let electronApp: ElectronApplication;
-  let page: Page;
-  let tempUserDataDir: string;
+  let ctx: ElectronTestContext;
 
   test.beforeAll(async () => {
-    // 1. 创建隔离的临时用户数据目录，避免本地多实例锁冲突
-    tempUserDataDir = fs.mkdtempSync(path.join(os.tmpdir(), 'electron-e2e-'));
-
-    // 2. 启动 Electron 应用
-    electronApp = await electron.launch({
-      args: ['.', `--user-data-dir=${tempUserDataDir}`, '--disable-gpu', '--no-sandbox'],
-      env: {
-        ...process.env,
-        NODE_ENV: 'test',
-      },
-    });
-
-    // 3. 将主进程日志重定向至控制台以便追踪诊断
-    electronApp.process().stdout?.pipe(process.stdout);
-    electronApp.process().stderr?.pipe(process.stderr);
-
-    // 4. 等待应用首个窗口加载就绪
-    page = await electronApp.firstWindow();
-    await page.waitForLoadState('domcontentloaded');
+    // 调用封装好的统一启动辅助函数
+    ctx = await launchElectronApp();
   });
 
   test.afterAll(async () => {
-    // 关闭 Electron 实例
-    if (electronApp) {
-      await electronApp.close();
-    }
-
-    // 清理测试用临时目录
-    if (tempUserDataDir && fs.existsSync(tempUserDataDir)) {
-      try {
-        fs.rmSync(tempUserDataDir, { recursive: true, force: true });
-      } catch {
-        // 忽略 Windows 进程临时文件锁
-      }
-    }
+    // 统一优雅清理资源
+    await ctx?.cleanup();
   });
 
   test('初始加载时更新弹窗应当处于隐藏状态', async () => {
-    const modalHeading = page.getByRole('heading', { name: '软件版本与更新' });
+    const modalHeading = ctx.page.getByRole('heading', { name: '软件版本与更新' });
     await expect(modalHeading).not.toBeVisible();
   });
 
   test('从系统托盘右键菜单中触发“检查更新”后，前端应成功弹出检查更新窗口', async () => {
+    const { page, electronApp } = ctx;
     const modalHeading = page.getByRole('heading', { name: '软件版本与更新' });
 
     // 1. 在 Electron 主进程中通过动态模块加载获取 TrayManager，通过稳定语义 ID 查找菜单项并触发点击
@@ -79,7 +42,7 @@ test.describe('Electron 托盘与更新弹窗 E2E 自动化测试', () => {
         throw new Error('Tray 托盘上下文菜单尚未初始化');
       }
 
-      // 方案 3：通过稳定语义 ID 查找菜单项，避免硬编码文字匹配与国际化冲突
+      // 通过稳定语义 ID 查找菜单项，避免硬编码文字匹配与国际化冲突
       const checkUpdateItem = contextMenu.getMenuItemById('tray-check-for-updates');
 
       if (!checkUpdateItem) {

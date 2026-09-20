@@ -1,5 +1,4 @@
 import fs from 'node:fs';
-import { createRequire } from 'node:module';
 import path from 'node:path';
 import { app, dialog } from 'electron';
 import type { AppInitConfig } from './AppInitConfig';
@@ -26,8 +25,6 @@ export {
   getTrayManager,
   WindowStateKeeper,
 };
-
-const cjsRequire = typeof require === 'function' ? require : createRequire(import.meta.url);
 
 function handleFatalCrash(type: string, error: unknown): void {
   const errorDetails = error instanceof Error ? error.stack || error.message : String(error);
@@ -56,7 +53,7 @@ function handleFatalCrash(type: string, error: unknown): void {
 process.on('uncaughtException', (err) => handleFatalCrash('uncaughtException', err));
 process.on('unhandledRejection', (reason) => handleFatalCrash('unhandledRejection', reason));
 
-export async function initApp(initConfig: AppInitConfig) {
+async function initApp(initConfig: AppInitConfig) {
   const moduleRunner = createModuleRunner()
     .init(createLogModule())
     .init(createTRPCModule())
@@ -85,11 +82,11 @@ initApp({
     process.env.MODE === 'development' && process.env.VITE_DEV_SERVER_URL
       ? new URL(process.env.VITE_DEV_SERVER_URL as string)
       : {
-          path: cjsRequire.resolve('@app/renderer'),
+          path: require.resolve('@app/renderer'),
         },
 
   preload: {
-    path: cjsRequire.resolve('@app/preload/exposed.js'),
+    path: require.resolve('@app/preload/exposed.js'),
   },
 }).catch((error) => {
   handleFatalCrash('initAppFailed', error);
