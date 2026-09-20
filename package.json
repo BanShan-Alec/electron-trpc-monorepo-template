@@ -7,6 +7,10 @@
     "name": "BanShan-Alec",
     "email": "627649674@qq.com"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/BanShan-Alec/electron-app-temp4.git"
+  },
   "private": true,
   "packageManager": "pnpm@10.34.5",
   "main": "packages/main/dist/index.cjs",

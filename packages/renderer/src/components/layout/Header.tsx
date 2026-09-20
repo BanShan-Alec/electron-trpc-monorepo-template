@@ -4,9 +4,18 @@ import { Badge } from '../ui';
 export interface HeaderProps {
   activeTab: 'dashboard' | 'architecture';
   onTabChange: (tab: 'dashboard' | 'architecture') => void;
+  version?: string;
+  hasUpdate?: boolean;
+  onOpenUpdateModal?: () => void;
 }
 
-export const Header: React.FC<HeaderProps> = ({ activeTab, onTabChange }) => {
+export const Header: React.FC<HeaderProps> = ({
+  activeTab,
+  onTabChange,
+  version = '1.0.3',
+  hasUpdate = false,
+  onOpenUpdateModal,
+}) => {
   return (
     <header className="drag-region bg-background-secondary/80 backdrop-blur-md border-b border-border px-6 py-4 flex flex-col md:flex-row items-center justify-between gap-4 sticky top-0 z-30 select-none">
       <div className="flex items-center gap-3">
@@ -18,9 +27,27 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, onTabChange }) => {
             <h1 className="text-lg font-bold text-foreground tracking-tight">
               Electron + Vite + tRPC
             </h1>
-            <Badge variant="primary" size="sm">
-              v3.1.0
-            </Badge>
+            <button
+              type="button"
+              onClick={onOpenUpdateModal}
+              title="点击查看版本与检查更新"
+              className="no-drag transition-transform hover:scale-105 active:scale-95 cursor-pointer focus:outline-none"
+            >
+              <Badge
+                variant={hasUpdate ? 'success' : 'primary'}
+                size="sm"
+                className="flex items-center gap-1.5"
+              >
+                {hasUpdate && (
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-success opacity-75" />
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-success" />
+                  </span>
+                )}
+                <span>v{version}</span>
+                {hasUpdate && <span className="font-semibold text-[10px]">新版本!</span>}
+              </Badge>
+            </button>
           </div>
           <p className="text-xs text-foreground-secondary mt-0.5">
             企业级端到端类型安全桌面客户端脚手架

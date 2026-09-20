@@ -10,6 +10,29 @@ const config: Configuration = {
     buildResources: 'build/resources',
   },
   generateUpdatesFilesForAllChannels: true,
+  publish: {
+    provider: 'github',
+    owner: 'BanShan-Alec',
+    repo: 'electron-app-temp4',
+    releaseType: 'release',
+  },
+  win: {
+    target: [
+      {
+        target: 'nsis',
+        arch: ['x64'],
+      },
+    ],
+  },
+  nsis: {
+    oneClick: false,
+    allowToChangeInstallationDirectory: true,
+    perMachine: false,
+    allowElevation: true,
+    createDesktopShortcut: true,
+    createStartMenuShortcut: true,
+    shortcutName: pkg.productName || pkg.name,
+  },
   linux: {
     target: ['deb'],
   },
@@ -25,7 +48,7 @@ const config: Configuration = {
    * as they can unpredictably change during deployment, making them impossible to locate and download for update.
    */
   // biome-ignore lint/suspicious/noTemplateCurlyInString: electron-builder placeholder template
-  artifactName: '${productName}-${version}-${os}-${arch}.${ext}',
+  artifactName: '${name}-${version}-${os}-${arch}.${ext}',
   files: ['LICENSE*', pkg.main, '!node_modules/@app/**', ...getListOfFilesFromEachWorkspace()],
 };
 

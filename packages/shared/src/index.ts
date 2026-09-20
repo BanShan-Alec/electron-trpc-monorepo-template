@@ -33,3 +33,48 @@ export const logSchema = z.object({
 });
 
 export type LogInput = z.infer<typeof logSchema>;
+
+// ==========================================
+// 自动更新相关 Schema 与契约
+// ==========================================
+export const updateStatusSchema = z.enum([
+  'idle',
+  'checking',
+  'available',
+  'not-available',
+  'downloading',
+  'downloaded',
+  'error',
+]);
+
+export type UpdateStatus = z.infer<typeof updateStatusSchema>;
+
+export const updateProgressSchema = z.object({
+  percent: z.number(),
+  bytesPerSecond: z.number(),
+  transferred: z.number(),
+  total: z.number(),
+});
+
+export type UpdateProgress = z.infer<typeof updateProgressSchema>;
+
+export const updateInfoSchema = z.object({
+  version: z.string(),
+  releaseDate: z.string().optional(),
+  releaseNotes: z.union([z.string(), z.array(z.record(z.string(), z.unknown()))]).optional(),
+  releaseName: z.string().optional(),
+});
+
+export type UpdateInfo = z.infer<typeof updateInfoSchema>;
+
+export const updateStateSchema = z.object({
+  status: updateStatusSchema,
+  currentVersion: z.string(),
+  hasUpdate: z.boolean(),
+  updateInfo: updateInfoSchema.nullable().optional(),
+  progress: updateProgressSchema.nullable().optional(),
+  error: z.string().nullable().optional(),
+  showModalRequested: z.boolean(),
+});
+
+export type UpdateState = z.infer<typeof updateStateSchema>;

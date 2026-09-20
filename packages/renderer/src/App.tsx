@@ -7,6 +7,7 @@ import { DevToolsCard, LoggingCard, useDiagnostics } from './features/diagnostic
 import { DialogCard, useNativeDialogs } from './features/native-dialogs';
 import { SettingsCard, useAppConfig } from './features/settings';
 import { PingCard, SystemInfoCard, useSystemInfo } from './features/system-info';
+import { UpdateModal, useUpdater } from './features/updater';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<'dashboard' | 'architecture'>('dashboard');
@@ -18,11 +19,18 @@ export default function App() {
   const settings = useAppConfig();
   const dialogs = useNativeDialogs();
   const diagnostics = useDiagnostics();
+  const updater = useUpdater();
 
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground selection:bg-primary/30">
       {/* App Header & Navigation */}
-      <Header activeTab={activeTab} onTabChange={setActiveTab} />
+      <Header
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
+        version={updater.currentVersion}
+        hasUpdate={updater.updateState.hasUpdate}
+        onOpenUpdateModal={updater.openModal}
+      />
 
       {/* Main Content Area */}
       <main className="flex-1 p-6 max-w-7xl mx-auto w-full overflow-y-auto stable-scrollbar">
@@ -105,6 +113,18 @@ export default function App() {
 
         {activeTab === 'architecture' && <ArchitectureView />}
       </main>
+
+      {/* Software Update Modal */}
+      <UpdateModal
+        isOpen={updater.isModalOpen}
+        onClose={updater.closeModal}
+        currentVersion={updater.currentVersion}
+        updateState={updater.updateState}
+        isChecking={updater.isChecking}
+        onCheck={updater.checkForUpdates}
+        onDownload={updater.downloadUpdate}
+        onInstall={updater.installUpdateAndRestart}
+      />
     </div>
   );
 }

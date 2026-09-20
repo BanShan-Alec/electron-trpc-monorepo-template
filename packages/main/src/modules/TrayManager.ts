@@ -3,6 +3,7 @@ import path from 'node:path';
 import { app, BrowserWindow, Menu, nativeImage, Tray } from 'electron';
 import type { AppModule } from '../AppModule';
 import type { ModuleContext } from '../ModuleContext';
+import { getAutoUpdaterManager } from './AutoUpdater';
 import { getLogManager } from './LogManager';
 
 export class TrayManager implements AppModule {
@@ -47,6 +48,9 @@ export class TrayManager implements AppModule {
           click: () => {
             getLogManager().mainLogger.info('[Tray] User requested update check');
             this.restoreMainWindow();
+            const updater = getAutoUpdaterManager();
+            updater.requestShowModal();
+            updater.checkForUpdates(true).catch(() => {});
           },
         },
         { type: 'separator' },

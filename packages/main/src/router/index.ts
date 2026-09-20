@@ -1,8 +1,9 @@
 import os from 'node:os';
 import process from 'node:process';
 import { initTRPC, TRPCError } from '@trpc/server';
-import { BrowserWindow, dialog, shell } from 'electron';
+import { app, BrowserWindow, dialog, shell } from 'electron';
 import { z } from 'zod';
+import { getAutoUpdaterManager } from '../modules/AutoUpdater';
 import { getAppConfigStore } from '../modules/ConfigStore';
 import { getLogManager } from '../modules/LogManager';
 
@@ -297,6 +298,38 @@ export const appRouter = router({
       shell.showItemInFolder(input.path);
       return { success: true };
     }),
+
+  // 9. AutoUpdater procedures
+  getAppVersion: publicProcedure.query(() => {
+    return {
+      version: app.getVersion(),
+      name: app.getName(),
+    };
+  }),
+
+  getUpdateState: publicProcedure.query(() => {
+    return getAutoUpdaterManager().getState();
+  }),
+
+  checkForUpdates: publicProcedure.mutation(async () => {
+    const state = await getAutoUpdaterManager().checkForUpdates(true);
+    return state;
+  }),
+
+  downloadUpdate: publicProcedure.mutation(async () => {
+    await getAutoUpdaterManager().downloadUpdate();
+    return { success: true };
+  }),
+
+  installUpdateAndRestart: publicProcedure.mutation(() => {
+    getAutoUpdaterManager().quitAndInstall();
+    return { success: true };
+  }),
+
+  ackUpdateModal: publicProcedure.mutation(() => {
+    getAutoUpdaterManager().ackShowModal();
+    return { success: true };
+  }),
 });
 
 export type AppRouter = typeof appRouter;
